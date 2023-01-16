@@ -16,6 +16,7 @@ use context::Context;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
 use std::panic::{AssertUnwindSafe, catch_unwind};
+use winit::window::WindowBuilder;
 
 static CONTEXT_PROXY_VALID: AtomicBool = AtomicBool::new(false);
 static mut CONTEXT_PROXY: Option<ContextProxy> = None;
@@ -228,10 +229,10 @@ pub fn context() -> ContextProxy {
 ///
 /// # Panics
 /// This panics if the global context is not yet fully initialized.
-pub fn create_window(title: impl Into<String>, options: WindowOptions) -> Result<WindowProxy, error::CreateWindowError> {
+pub fn create_window(title: impl Into<String>, options: WindowOptions, builder: WindowBuilder) -> Result<WindowProxy, error::CreateWindowError> {
 	let title = title.into();
 	context().run_function_wait(move |context| {
-		let window = context.create_window(title, options)?;
+		let window = context.create_window(title, options, builder)?;
 		Ok(window.proxy())
 	})
 }

@@ -2,6 +2,7 @@ use raqote::DrawOptions;
 use raqote::DrawTarget;
 use raqote::PathBuilder;
 use raqote::StrokeStyle;
+use winit::window::WindowBuilder;
 use show_image::event::ModifiersState;
 use show_image::event::VirtualKeyCode;
 use show_image::event::WindowEvent;
@@ -119,7 +120,7 @@ fn main() -> Result<(), String> {
 	let overlay: show_image::Image = overlay.into();
 
 	let window = show_image::context().run_function_wait(move |context| -> Result<_, String> {
-		let mut window = context.create_window("image", Default::default()).map_err(|e| e.to_string())?;
+		let mut window = context.create_window("image", Default::default(), WindowBuilder::new()).map_err(|e| e.to_string())?;
 		window.set_image("mondriaan", &image.as_image_view().map_err(|e| e.to_string())?);
 		window.set_overlay("overlay", &overlay.as_image_view().map_err(|e| e.to_string())?, false);
 		Ok(window.proxy())

@@ -1,3 +1,4 @@
+use winit::window::WindowBuilder;
 use show_image::event;
 
 #[show_image::main]
@@ -17,7 +18,7 @@ fn main() -> Result<(), String> {
 	let image_info = show_image::image_info(&image).map_err(|e| e.to_string())?;
 	println!("{:#?}", image_info);
 
-	let window = show_image::create_window("image", Default::default()).map_err(|e| e.to_string())?;
+	let window = show_image::create_window("image", Default::default(), WindowBuilder::new()).map_err(|e| e.to_string())?;
 	window.set_image(name, image).map_err(|e| e.to_string())?;
 
 	// Wait for the window to be closed or Escape to be pressed.

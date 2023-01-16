@@ -16,6 +16,7 @@ use crate::WindowHandle;
 use crate::WindowId;
 use crate::WindowOptions;
 use glam::Affine2;
+use winit::window::WindowBuilder;
 
 /// Internal shorthand type-alias for the correct [`winit::event_loop::EventLoop`].
 ///
@@ -253,8 +254,8 @@ impl<'a> ContextHandle<'a> {
 	}
 
 	/// Create a new window.
-	pub fn create_window(&mut self, title: impl Into<String>, options: WindowOptions) -> Result<WindowHandle, CreateWindowError> {
-		let index = self.context.create_window(self.event_loop, title, options)?;
+	pub fn create_window(&mut self, title: impl Into<String>, options: WindowOptions, builder: WindowBuilder) -> Result<WindowHandle, CreateWindowError> {
+		let index = self.context.create_window(self.event_loop, title, options, builder)?;
 		Ok(WindowHandle::new(self.reborrow(), index, None))
 	}
 
@@ -298,22 +299,23 @@ impl Context {
 		event_loop: &EventLoopWindowTarget,
 		title: impl Into<String>,
 		options: WindowOptions,
+		window: WindowBuilder,
 	) -> Result<usize, CreateWindowError> {
-		let fullscreen = if options.fullscreen {
-			Some(winit::window::Fullscreen::Borderless(None))
-		} else {
-			None
-		};
-		let mut window = winit::window::WindowBuilder::new()
-			.with_title(title)
-			.with_visible(!options.start_hidden)
-			.with_resizable(options.resizable)
-			.with_decorations(!options.borderless)
-			.with_fullscreen(fullscreen);
+		// let fullscreen = if options.fullscreen {
+		// 	Some(winit::window::Fullscreen::Borderless(None))
+		// } else {
+		// 	None
+		// };
+		// let mut window = winit::window::WindowBuilder::new()
+		// 	.with_title(title)
+		// 	.with_visible(!options.start_hidden)
+		// 	.with_resizable(options.resizable)
+		// 	.with_decorations(!options.borderless)
+		// 	.with_fullscreen(fullscreen);
 
-		if let Some(size) = options.size {
-			window = window.with_inner_size(winit::dpi::PhysicalSize::new(size[0], size[1]));
-		}
+		// if let Some(size) = options.size {
+		// 	window = window.with_inner_size(winit::dpi::PhysicalSize::new(size[0], size[1]));
+		// }
 
 		let window = window.build(event_loop)?;
 		let surface = unsafe { self.instance.create_surface(&window) };
